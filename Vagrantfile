@@ -18,7 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "master", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_master.sh"
+    v.vm.provision :shell, :path => "bootstrap_nodes.sh", :args => "-t"
     v.vm.network "private_network", ip: "10.1.2.10"
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "master"
@@ -31,8 +31,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-    config.vm.define "node1", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_node.sh"
+  config.vm.define "node1", primary: true do |v|
+    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
     v.vm.network "private_network", ip: "10.1.2.11"
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "node1"
