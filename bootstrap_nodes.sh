@@ -52,7 +52,6 @@ useradd -ms /bin/bash -u 999 mpiuser
 echo "mpiuser:password1234" | chpasswd
 echo "mpiuser ALL=NOPASSWD: ALL" >> /etc/sudoers
 
-
 # Stuff to permit
 # passwordless ssh between
 # master and nodes.
@@ -63,8 +62,9 @@ if [ "x$ISMASTER" != "x" ]; then
     chown mpiuser:mpiuser /home/mpiuser/master-add-ssh-id.sh
 
     x=$(HOME=/home/mpiuser sudo -u mpiuser /home/mpiuser/master-add-ssh-id.sh)
-
 fi
+
+echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
 chown -R mpiuser:mpiuser /home/mpiuser
 
@@ -93,9 +93,12 @@ fi
 # Without this env variable, we have to specify the file with a flag
 # any time mpiexec is invoked.
 ###
+
+# All nodes need mpich2
+apt-get install -y mpich2
+
 if [ "x$ISMASTER" != "x" ]; then
 
-    apt-get install -y mpich2
     cp /vagrant/mpiuser_hosts.txt /home/mpiuser/hosts
     chown mpiuser:mpiuser /home/mpiuser/hosts
 
@@ -112,5 +115,13 @@ fi
 # the nfs mount starts automatically.
 ###
 if [ "x$ISMASTER" == "x" ]; then
-    echo "master:/home/mpiuser /mpiuser nfs" >> /etc/fstab
+    echo "master:/home/mpiuser /home/mpiuser nfs" >> /etc/fstab
 fi
+
+###
+# Cleanup items.
+#
+# Restart nfs-kernel-server
+###
+service nfs-kernel-server restart
+exportfs -a
