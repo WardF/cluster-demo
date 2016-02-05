@@ -45,4 +45,46 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
+  config.vm.define "node2", primary: true do |v|
+    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
+    v.vm.network "private_network", ip: "10.1.2.12"
+    v.vm.box = "ubuntu/trusty64"
+    v.vm.hostname = "node2"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+        "modifyvm", :id,
+        "--memory", "512"
+      ]
+    end
+  end
+
+  config.vm.define "node3", primary: true do |v|
+    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
+    v.vm.network "private_network", ip: "10.1.2.13"
+    v.vm.box = "ubuntu/trusty64"
+    v.vm.hostname = "node3"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+        "modifyvm", :id,
+        "--memory", "512"
+      ]
+    end
+  end
+
+  config.vm.define "node4", primary: true do |v|
+    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
+    v.vm.network "private_network", ip: "10.1.2.14"
+    v.vm.box = "ubuntu/trusty64"
+    v.vm.hostname = "node4"
+
+    v.vm.provider "virtualbox" do |vb|
+      vb.customize [
+        "modifyvm", :id,
+        "--memory", "512"
+      ]
+    end
+  end
+
 end

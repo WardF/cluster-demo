@@ -41,9 +41,9 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get -y -q install nfs-common nfs-kernel-server sshpass expect
 
 ##
-# Concatonate local_hosts.txt onto /etc/hosts
+# Concatonate cluster_hosts.txt onto /etc/hosts
 ##
-cat /vagrant/local_hosts.txt >> /etc/hosts
+cat /vagrant/cluster_hosts.txt >> /etc/hosts
 
 ##
 # Create an mpi user
@@ -62,7 +62,7 @@ if [ "x$ISMASTER" != "x" ]; then
     cp /vagrant/master-add-ssh-id.sh /home/mpiuser
     chown mpiuser:mpiuser /home/mpiuser/master-add-ssh-id.sh
 
-    sudo -u mpiuser /home/mpiuser/master-add-ssh-id.sh
+    x=$(HOME=/home/mpiuser sudo -u mpiuser /home/mpiuser/master-add-ssh-id.sh)
 
 fi
 
@@ -80,17 +80,10 @@ if [ "x$ISMASTER" != "x" ]; then
     echo "/home/mpiuser *(rw,sync,no_subtree_check)" >> /etc/exports
     service nfs-kernel-server restart
 
-    ##
-    # Also set up an environmental system-wide variable that will
-    # tell the master where the hosts file is for hydra, the mpich2
-    # job manager.
-    ##
-    echo "export HYDRA_HOST_FILE=/home/mpiuser/hosts" >> /etc/bash.bashrc
-
 fi
 
 ###
-# If this is a master, we are going to use the Hydra process manager.
+# If this is the master, we are going to use the Hydra process manager.
 # See documentation at:
 #   * https://wiki.mpich.org/mpich/index.php/Using_the_Hydra_Process_Manager
 #
@@ -102,7 +95,16 @@ fi
 ###
 if [ "x$ISMASTER" != "x" ]; then
 
+    apt-get install -y mpich2
+    cp /vagrant/cluster_hosts.txt /home/mpiuser/hosts
+    chown mpiuser:mpiuser /home/mpiuser/hosts
 
+    ##
+    # Set up an environmental system-wide variable that will
+    # tell the master where the hosts file is for hydra, the mpich2
+    # job manager.
+    ##
+    echo "export HYDRA_HOST_FILE=/home/mpiuser/hosts" >> /etc/bash.bashrc
 fi
 
 ###
