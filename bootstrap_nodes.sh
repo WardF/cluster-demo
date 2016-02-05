@@ -43,7 +43,7 @@ apt-get -y -q install nfs-common nfs-kernel-server sshpass expect
 ##
 # Concatonate cluster_hosts.txt onto /etc/hosts
 ##
-cat /vagrant/cluster_hosts.txt >> /etc/hosts
+cat /vagrant/etc_hosts.txt >> /etc/hosts
 
 ##
 # Create an mpi user
@@ -96,7 +96,7 @@ fi
 if [ "x$ISMASTER" != "x" ]; then
 
     apt-get install -y mpich2
-    cp /vagrant/cluster_hosts.txt /home/mpiuser/hosts
+    cp /vagrant/mpiuser_hosts.txt /home/mpiuser/hosts
     chown mpiuser:mpiuser /home/mpiuser/hosts
 
     ##
