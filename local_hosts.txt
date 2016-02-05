@@ -1,0 +1,6 @@
+###
+# Cluster IP list
+###
+
+10.1.2.10 master
+10.1.2.11 node1
