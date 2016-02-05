@@ -38,7 +38,7 @@ done
 apt-get update
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get -y -q install nfs-common nfs-kernel-server sshpass expect
+apt-get -y -q install nfs-common nfs-kernel-server sshpass expect git ubuntu-dev-tools libtool cmake m4 autoconf zlib1g-dev curl flex bison wget libcurl4-openssl-dev
 
 ##
 # Concatonate cluster_hosts.txt onto /etc/hosts
@@ -117,6 +117,38 @@ fi
 if [ "x$ISMASTER" == "x" ]; then
     echo "master:/home/mpiuser /home/mpiuser nfs" >> /etc/fstab
 fi
+
+
+###
+# Download and install hdf5
+###
+HDF5VER="1.8.16"
+HDF5_VER="hdf5-$HDF5VER"
+
+# Install hdf5 from source
+if [ ! -f /usr/lib/libhdf5.settings ]; then
+    HDF5_FILE="$HDF5_VER".tar.bz2
+    if [ ! -f "/vagrant/$HDF5_FILE" ]; then
+	    wget http://www.hdfgroup.org/ftp/HDF5/releases/$HDF5_VER/src/$HDF5_FILE
+	    cp "$HDF5_FILE" /vagrant
+    else
+	    cp "/vagrant/$HDF5_FILE" .
+    fi
+
+    tar -jxf $HDF5_FILE
+    pushd $HDF5_VER
+
+
+    CFLAGS="-Wno-format-security" CC=`which mpicc` ./configure --enable-shared --disable-static --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix=/usr
+
+    make install -j 4
+    popd
+    rm -rf $HDF5_VER
+fi
+
+###
+# End HDF5 Install
+###
 
 ###
 # Cleanup items.
