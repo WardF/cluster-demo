@@ -123,7 +123,7 @@ fi
 ###
 if [ "x$ISMASTER" != "x" ]; then
     PNET_VER="parallel-netcdf-1.6.1"
-    PNET_FILE="$PNET_VER.tar.bz3"
+    PNET_FILE="$PNET_VER.tar.bz2"
     if [ ! -f "/vagrant/$PNET_FILE" ]; then
         wget http://cucis.ece.northwestern.edu/projects/PnetCDF/Release/$PNET_FILE
         cp "$PNET_FILE" /vagrant

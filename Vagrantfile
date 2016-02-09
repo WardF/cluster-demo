@@ -37,186 +37,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   ########
-  # Node 1
-  ########
-  config.vm.define "node1", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
-    v.vm.network "private_network", ip: "10.1.2.11"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "node1"
+  # Multi-nodes defined in a loop, see
+  # * https://www.vagrantup.com/docs/vagrantfile/tips.html
+  # for more information
+  #######
 
-    if VAGRANT_COMMAND == "ssh"
-      config.ssh.username = 'mpiuser'
-      config.ssh.password = "password1234"
-      config.ssh.insert_key = 'true'
-    end
+  (1..8).each do |i|
+    config.vm.define "node#{i}" do |v|
+      v.vm.provision :shell, :path => "bootstrap_nodes.sh"
+      newip = 10 + i
+      v.vm.network "private_network", ip: "10.1.2.#{newip}"
+      v.vm.box = "ubuntu/trusty64"
+      v.vm.hostname = "node#{i}"
 
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-                    "modifyvm", :id,
-                    "--memory", "512"
-                   ]
-    end
-  end
-
-  ########
-  # Node 2
-  ########
-  config.vm.define "node2", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
-    v.vm.network "private_network", ip: "10.1.2.12"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "node2"
-
-    if VAGRANT_COMMAND == "ssh"
-      config.ssh.username = 'mpiuser'
-      config.ssh.password = 'password1234'
-      config.ssh.insert_key = 'true'
-    end
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-        "modifyvm", :id,
-        "--memory", "512"
-      ]
-    end
-  end
-
-  ########
-  # Node 3
-  ########
-  config.vm.define "node3", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
-    v.vm.network "private_network", ip: "10.1.2.13"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "node3"
-
-    if VAGRANT_COMMAND == "ssh"
-      config.ssh.username = 'mpiuser'
-      config.ssh.password = 'password1234'
-      config.ssh.insert_key = 'true'
-    end
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-        "modifyvm", :id,
-        "--memory", "512"
-      ]
-    end
-  end
-
-  ########
-  # Node 4
-  ########
-  config.vm.define "node4", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
-    v.vm.network "private_network", ip: "10.1.2.14"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "node4"
-
-    if VAGRANT_COMMAND == "ssh"
-      config.ssh.username = 'mpiuser'
-      config.ssh.password = 'password1234'
-      config.ssh.insert_key = 'true'
-    end
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-        "modifyvm", :id,
-        "--memory", "512"
-      ]
-    end
-  end
-
-  ########
-  # Node 5
-  ########
-  config.vm.define "node5", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
-    v.vm.network "private_network", ip: "10.1.2.15"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "node5"
-
-    if VAGRANT_COMMAND == "ssh"
-      config.ssh.username = 'mpiuser'
-      config.ssh.password = 'password1234'
-      config.ssh.insert_key = 'true'
-    end
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-        "modifyvm", :id,
-        "--memory", "512"
-      ]
-    end
-  end
-
-  ########
-  # Node 6
-  ########
-  config.vm.define "node6", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
-    v.vm.network "private_network", ip: "10.1.2.16"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "node6"
-
-    if VAGRANT_COMMAND == "ssh"
-      config.ssh.username = 'mpiuser'
-      config.ssh.password = 'password1234'
-      config.ssh.insert_key = 'true'
-    end
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-        "modifyvm", :id,
-        "--memory", "512"
-      ]
-    end
-  end
-
-  ########
-  # Node 7
-  ########
-  config.vm.define "node7", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
-    v.vm.network "private_network", ip: "10.1.2.17"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "node7"
-
-    if VAGRANT_COMMAND == "ssh"
-      config.ssh.username = 'mpiuser'
-      config.ssh.password = 'password1234'
-      config.ssh.insert_key = 'true'
-    end
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-        "modifyvm", :id,
-        "--memory", "512"
-      ]
-    end
-  end
-
-  ########
-  # Node 8
-  ########
-  config.vm.define "node8", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_nodes.sh"
-    v.vm.network "private_network", ip: "10.1.2.18"
-    v.vm.box = "ubuntu/trusty64"
-    v.vm.hostname = "node8"
-
-    if VAGRANT_COMMAND == "ssh"
-      config.ssh.username = 'mpiuser'
-      config.ssh.password = 'password1234'
-      config.ssh.insert_key = 'true'
-    end
-
-    v.vm.provider "virtualbox" do |vb|
-      vb.customize [
-        "modifyvm", :id,
-        "--memory", "512"
-      ]
+      # if VAGRANT_COMMAND == "ssh"
+      #  config.ssh.username = 'mpiuser'
+      #  config.ssh.password = "password1234"
+      #  config.ssh.insert_key = 'true'
+      # end
     end
   end
 
