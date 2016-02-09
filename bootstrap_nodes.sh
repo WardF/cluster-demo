@@ -120,31 +120,43 @@ fi
 
 
 ###
-# Download and install hdf5
+# Download and install hdf5 into mpiuser, if master.
 ###
-HDF5VER="1.8.16"
-HDF5_VER="hdf5-$HDF5VER"
 
-# Install hdf5 from source
-if [ ! -f /usr/lib/libhdf5.settings ]; then
-    HDF5_FILE="$HDF5_VER".tar.bz2
-    if [ ! -f "/vagrant/$HDF5_FILE" ]; then
-	    wget http://www.hdfgroup.org/ftp/HDF5/releases/$HDF5_VER/src/$HDF5_FILE
-	    cp "$HDF5_FILE" /vagrant
-    else
-	    cp "/vagrant/$HDF5_FILE" .
+if [ "x$ISMASTER" == "x" ]; then
+    HDF5VER="1.8.16"
+    HDF5_VER="hdf5-$HDF5VER"
+    TARGDIR=/home/mpiuser/usr
+    # Install hdf5 from source
+    if [ ! -f /usr/lib/libhdf5.settings ]; then
+        HDF5_FILE="$HDF5_VER".tar.bz2
+        if [ ! -f "/vagrant/$HDF5_FILE" ]; then
+	        wget http://www.hdfgroup.org/ftp/HDF5/releases/$HDF5_VER/src/$HDF5_FILE
+	        cp "$HDF5_FILE" /vagrant
+        else
+	        cp "/vagrant/$HDF5_FILE" .
+        fi
+
+        tar -jxf $HDF5_FILE
+        pushd $HDF5_VER
+
+
+        CFLAGS="-Wno-format-security" CC=`which mpicc` ./configure --enable-shared --disable-static --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix="${TARGDIR}"
+
+        make install -j 4
+        popd
+        rm -rf $HDF5_VER
     fi
-
-    tar -jxf $HDF5_FILE
-    pushd $HDF5_VER
-
-
-    CFLAGS="-Wno-format-security" CC=`which mpicc` ./configure --enable-shared --disable-static --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix=/usr
-
-    make install -j 4
-    popd
-    rm -rf $HDF5_VER
 fi
+
+###
+# Everybody needs to know where the HDF5 stuff is.
+###
+
+echo "export C_INCLUDE_PATH=/home/mpiuser/usr/include" >> /etc/bash.bashrc
+echo "export CPLUS_INCLUDE_PATH=/home/mpiuser/usr/include" >> /etc/bash.bashrc
+echo "export LIBRARY_PATH=/home/mpiuser/usr/lib" >> /etc/bash.bashrc
+echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/mpiuser/usr/lib' >> /etc/bash.bashrc
 
 ###
 # End HDF5 Install
@@ -157,3 +169,10 @@ fi
 ###
 service nfs-kernel-server restart
 exportfs -a
+
+###
+# Final: If not master, reboot.
+###
+if [ "x$ISMASTER" == "x" ]; then
+    reboot
+fi
