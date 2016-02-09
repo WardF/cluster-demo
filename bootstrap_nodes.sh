@@ -118,6 +118,29 @@ if [ "x$ISMASTER" == "x" ]; then
     echo "master:/home/mpiuser /home/mpiuser nfs" >> /etc/fstab
 fi
 
+###
+# Download and install pnetcdf into mpiuser, if master.
+###
+if [ "x$ISMASTER" != "x" ]; then
+    PNET_VER="parallel-netcdf-1.6.1"
+    PNET_FILE="$PNET_VER.tar.bz3"
+    if [ ! -f "/vagrant/$PNET_FILE" ]; then
+        wget http://cucis.ece.northwestern.edu/projects/PnetCDF/Release/$PNET_FILE
+        cp "$PNET_FILE" /vagrant
+    else
+        cp "/vagrant/$PNET_FILE" .
+    fi
+
+    tar -jxf $PNET_FILE
+    pushd $PNET_VER
+    CPPFLAGS="-fPIC" CC=`which mpicc` ./configure --prefix=/home/mpiuser/usr
+    make -k install
+    popd
+    rm -rf $PNET_VER
+fi
+###
+# End pnetcdf
+###
 
 ###
 # Download and install hdf5 into mpiuser, if master.
