@@ -95,7 +95,7 @@ fi
 ###
 
 # All nodes need mpich2
-apt-get install -y mpich2
+apt-get install -y libopenmpi-dev openmpi-bin
 
 if [ "x$ISMASTER" != "x" ]; then
 
