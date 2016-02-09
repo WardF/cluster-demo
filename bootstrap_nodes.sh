@@ -123,7 +123,7 @@ fi
 # Download and install hdf5 into mpiuser, if master.
 ###
 
-if [ "x$ISMASTER" == "x" ]; then
+if [ "x$ISMASTER" != "x" ]; then
     HDF5VER="1.8.16"
     HDF5_VER="hdf5-$HDF5VER"
     TARGDIR=/home/mpiuser/usr

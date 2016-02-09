@@ -4,6 +4,8 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
+VAGRANT_COMMAND = ARGV[0]
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
@@ -37,6 +39,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "node1"
 
+    if VAGRANT_COMMAND == "ssh"
+      config.ssh.username = 'mpiuser'
+      config.ssh.password = "password1234"
+      config.ssh.insert_key = 'true'
+    end
+
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
                     "modifyvm", :id,
@@ -50,6 +58,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.network "private_network", ip: "10.1.2.12"
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "node2"
+
+    if VAGRANT_COMMAND == "ssh"
+      config.ssh.username = 'mpiuser'
+      config.ssh.password = 'password1234'
+      config.ssh.insert_key = 'true'
+    end
 
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
@@ -65,6 +79,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "node3"
 
+    if VAGRANT_COMMAND == "ssh"
+      config.ssh.username = 'mpiuser'
+      config.ssh.password = 'password1234'
+      config.ssh.insert_key = 'true'
+    end
+
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
         "modifyvm", :id,
@@ -78,6 +98,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.network "private_network", ip: "10.1.2.14"
     v.vm.box = "ubuntu/trusty64"
     v.vm.hostname = "node4"
+
+    if VAGRANT_COMMAND == "ssh"
+      config.ssh.username = 'mpiuser'
+      config.ssh.password = 'password1234'
+      config.ssh.insert_key = 'true'
+    end
 
     v.vm.provider "virtualbox" do |vb|
       vb.customize [
