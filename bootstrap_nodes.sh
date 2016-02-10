@@ -38,7 +38,7 @@ done
 apt-get update
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get -y -q install nfs-common nfs-kernel-server sshpass expect git ubuntu-dev-tools libtool cmake m4 autoconf zlib1g-dev curl flex bison wget libcurl4-openssl-dev fortran emacs
+apt-get -y -q install nfs-common nfs-kernel-server sshpass expect git ubuntu-dev-tools libtool cmake m4 autoconf zlib1g-dev curl flex bison wget libcurl4-openssl-dev gfortran emacs
 
 ##
 # Concatonate cluster_hosts.txt onto /etc/hosts
