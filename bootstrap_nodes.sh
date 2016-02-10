@@ -133,7 +133,7 @@ if [ "x$ISMASTER" != "x" ]; then
 
     tar -jxf $PNET_FILE
     pushd $PNET_VER
-    CPPFLAGS="-fPIC" CC=`which mpicc` ./configure --prefix=/home/mpiuser/usr
+    CPPFLAGS="-fPIC" CC=`which mpicc` ./configure --prefix=/home/mpiuser/usr --disable-shared --enable-static
     make -k install
     popd
     rm -rf $PNET_VER
@@ -164,7 +164,7 @@ if [ "x$ISMASTER" != "x" ]; then
         pushd $HDF5_VER
 
 
-        CFLAGS="-Wno-format-security" CC=`which mpicc` ./configure --enable-shared --disable-static --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix="${TARGDIR}"
+        CFLAGS="-Wno-format-security" CC=`which mpicc` ./configure --enable-static --disable-shared --disable-fortran --enable-hl --disable-fortran --enable-parallel --prefix="${TARGDIR}"
 
         make install -j 4
         popd
