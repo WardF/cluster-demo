@@ -7,6 +7,7 @@
 # 1. Vagrantfile (Using vagrantfile.in
 # 2. mpiuser_hosts.txt
 # 3. etc_hosts.txt
+# 4. custom_up.txt
 #
 
 set -e
@@ -26,9 +27,14 @@ fi
 TOTNODE=$1
 
 ##
+# Status message
+##
+echo "Configuring cluster of $TOTNODE nodes."
+
+##
 # First, do Vagrantfile.
 ##
-echo "Creating Vagrantfile"
+echo "o Creating Vagrantfile"
 sed "s/xxnodecount/$TOTNODE/g" Vagrantfile.in > Vagrantfile
 
 ##
@@ -36,7 +42,7 @@ sed "s/xxnodecount/$TOTNODE/g" Vagrantfile.in > Vagrantfile
 ##
 
 rm -f mpiuser_hosts.txt
-echo "Creating mpiuser_hosts.txt"
+echo "o Creating mpiuser_hosts.txt"
 
 COUNTER=1
 
@@ -46,10 +52,10 @@ while [ $COUNTER -le $TOTNODE ]; do
 done
 
 ##
-# Finally, create etc_hosts.txt
+# Create etc_hosts.txt
 ##
 
-echo "Creating etc_hosts.txt"
+echo "o Creating etc_hosts.txt"
 
 COUNTER=1
 
@@ -66,3 +72,30 @@ while [ $COUNTER -le $TOTNODE ]; do
 
     let COUNTER=COUNTER+1
 done
+
+##
+# Finally, create custom_up.sh
+##
+
+echo "o Creating custom_up.sh"
+
+echo '#!/bin/bash' > custom_up.sh
+echo '#' >> custom_up.sh
+echo '# Utility script to bring up nodes in parallel.' >> custom_up.sh
+echo "" >> custom_up.sh
+
+echo 'vagrant up master' >> custom_up.sh
+echo "" >> custom_up.sh
+
+COUNTER=1
+
+while [ $COUNTER -le $TOTNODE ]; do
+
+    echo "xterm -bg black -fg white -e \"vagrant up node$COUNTER && echo 'Press [Return] to close' && read\" &" >> custom_up.sh
+    echo "sleep 10" >> custom_up.sh
+    echo "" >> custom_up.sh
+
+    let COUNTER=COUNTER+1
+done
+
+echo ""
