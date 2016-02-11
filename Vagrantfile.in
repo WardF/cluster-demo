@@ -42,7 +42,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # for more information
   #######
 
-  (1..3).each do |i|
+  (1..xxnodecount).each do |i|
     config.vm.define "node#{i}" do |v|
       v.vm.provision :shell, :path => "bootstrap_nodes.sh"
       newip = 10 + i
