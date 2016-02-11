@@ -98,4 +98,6 @@ while [ $COUNTER -le $TOTNODE ]; do
     let COUNTER=COUNTER+1
 done
 
+chmod 755 custom_up.sh
+
 echo ""
