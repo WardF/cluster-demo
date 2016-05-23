@@ -1,5 +1,10 @@
-# cluster-demo
-Sandbox for creating a Vagrant-based Beowulf cluster
+# vagrant-cluster
+Sandbox for creating a Vagrant-based Beowulf cluster.
+
+## Usage
+
+1. Install Vagrant
+2. $ vagrant up
 
 ## Resources
 
